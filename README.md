@@ -33,3 +33,8 @@ go run main.go
 Event logs are read using geth and saved to database (mongodb):
 
 ![Collection](./img/collection.png)
+
+## References
+
+- [Reading ERC-20 Token Event Logs | goethereumbook.org](https://goethereumbook.org/event-read-erc20/)
+- [Usage Examples | mongodb.com](https://www.mongodb.com/docs/drivers/go/current/usage-examples/)
