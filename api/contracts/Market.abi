@@ -23,6 +23,12 @@
           "internalType": "uint256",
           "name": "_orderId",
           "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "buyer",
+          "type": "address"
         }
       ],
       "name": "Buy",

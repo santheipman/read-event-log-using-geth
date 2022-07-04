@@ -30,7 +30,7 @@ var (
 
 // MarketMetaData contains all meta data concerning the Market contract.
 var MarketMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_USDAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_NFTAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_orderId\",\"type\":\"uint256\"}],\"name\":\"Buy\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_orderId\",\"type\":\"uint256\"}],\"name\":\"CancelSell\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_orderId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_seller\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_price\",\"type\":\"uint256\"}],\"name\":\"CreateSellOrder\",\"type\":\"event\"}]",
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_USDAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_NFTAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_orderId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"}],\"name\":\"Buy\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_orderId\",\"type\":\"uint256\"}],\"name\":\"CancelSell\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_orderId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_seller\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_price\",\"type\":\"uint256\"}],\"name\":\"CreateSellOrder\",\"type\":\"event\"}]",
 }
 
 // MarketABI is the input ABI used to generate the binding from.
@@ -249,37 +249,46 @@ func (it *MarketBuyIterator) Close() error {
 // MarketBuy represents a Buy event raised by the Market contract.
 type MarketBuy struct {
 	OrderId *big.Int
+	Buyer   common.Address
 	Raw     types.Log // Blockchain specific contextual infos
 }
 
-// FilterBuy is a free log retrieval operation binding the contract event 0x3e32821836f4caf5b64b2c8c6b460049a9797526960d31502f7575b8da39d5ae.
+// FilterBuy is a free log retrieval operation binding the contract event 0x7534e9c9396820aad756ba27f82162930f80bef863aabdf311e7dce26a79bccd.
 //
-// Solidity: event Buy(uint256 indexed _orderId)
-func (_Market *MarketFilterer) FilterBuy(opts *bind.FilterOpts, _orderId []*big.Int) (*MarketBuyIterator, error) {
+// Solidity: event Buy(uint256 indexed _orderId, address indexed buyer)
+func (_Market *MarketFilterer) FilterBuy(opts *bind.FilterOpts, _orderId []*big.Int, buyer []common.Address) (*MarketBuyIterator, error) {
 
 	var _orderIdRule []interface{}
 	for _, _orderIdItem := range _orderId {
 		_orderIdRule = append(_orderIdRule, _orderIdItem)
 	}
+	var buyerRule []interface{}
+	for _, buyerItem := range buyer {
+		buyerRule = append(buyerRule, buyerItem)
+	}
 
-	logs, sub, err := _Market.contract.FilterLogs(opts, "Buy", _orderIdRule)
+	logs, sub, err := _Market.contract.FilterLogs(opts, "Buy", _orderIdRule, buyerRule)
 	if err != nil {
 		return nil, err
 	}
 	return &MarketBuyIterator{contract: _Market.contract, event: "Buy", logs: logs, sub: sub}, nil
 }
 
-// WatchBuy is a free log subscription operation binding the contract event 0x3e32821836f4caf5b64b2c8c6b460049a9797526960d31502f7575b8da39d5ae.
+// WatchBuy is a free log subscription operation binding the contract event 0x7534e9c9396820aad756ba27f82162930f80bef863aabdf311e7dce26a79bccd.
 //
-// Solidity: event Buy(uint256 indexed _orderId)
-func (_Market *MarketFilterer) WatchBuy(opts *bind.WatchOpts, sink chan<- *MarketBuy, _orderId []*big.Int) (event.Subscription, error) {
+// Solidity: event Buy(uint256 indexed _orderId, address indexed buyer)
+func (_Market *MarketFilterer) WatchBuy(opts *bind.WatchOpts, sink chan<- *MarketBuy, _orderId []*big.Int, buyer []common.Address) (event.Subscription, error) {
 
 	var _orderIdRule []interface{}
 	for _, _orderIdItem := range _orderId {
 		_orderIdRule = append(_orderIdRule, _orderIdItem)
 	}
+	var buyerRule []interface{}
+	for _, buyerItem := range buyer {
+		buyerRule = append(buyerRule, buyerItem)
+	}
 
-	logs, sub, err := _Market.contract.WatchLogs(opts, "Buy", _orderIdRule)
+	logs, sub, err := _Market.contract.WatchLogs(opts, "Buy", _orderIdRule, buyerRule)
 	if err != nil {
 		return nil, err
 	}
@@ -311,9 +320,9 @@ func (_Market *MarketFilterer) WatchBuy(opts *bind.WatchOpts, sink chan<- *Marke
 	}), nil
 }
 
-// ParseBuy is a log parse operation binding the contract event 0x3e32821836f4caf5b64b2c8c6b460049a9797526960d31502f7575b8da39d5ae.
+// ParseBuy is a log parse operation binding the contract event 0x7534e9c9396820aad756ba27f82162930f80bef863aabdf311e7dce26a79bccd.
 //
-// Solidity: event Buy(uint256 indexed _orderId)
+// Solidity: event Buy(uint256 indexed _orderId, address indexed buyer)
 func (_Market *MarketFilterer) ParseBuy(log types.Log) (*MarketBuy, error) {
 	event := new(MarketBuy)
 	if err := _Market.contract.UnpackLog(event, "Buy", log); err != nil {

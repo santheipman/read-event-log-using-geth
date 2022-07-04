@@ -17,14 +17,6 @@ async function main() {
     console.log("USD address:", USD.address);
     console.log("NFT address:", NFT.address);
     console.log("Market address:", market.address);
-
-    // ---------------------Mint tokens---------------------
-    // -----------------------------------------------------
-    await USD.connect(admin).mint(buyer.address, 1000);
-    await USD.connect(buyer).approve(market.address, 1000);
-
-    await NFT.connect(admin).mint(seller.address);
-    await NFT.connect(seller).approve(market.address, 1);
   }
   
 main()

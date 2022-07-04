@@ -7,14 +7,13 @@ import "./interfaces/IUSD.sol";
 contract Market {
     event CreateSellOrder(uint256 indexed _orderId, address indexed _seller, uint256 _tokenId, uint256 _price);
     event CancelSell(uint256 indexed _orderId);
-    event Buy(uint256 indexed _orderId);
+    event Buy(uint256 indexed _orderId, address indexed buyer);
 
     address public USDAddress;
     address public NFTAddress;
 
     uint256 public orderCounter;
     mapping(uint256 => address) ownerOfOrder;
-    // mapping(uint256 => bool) isAvailable;
 
     constructor(address _USDAddress, address _NFTAddress) {
         USDAddress = _USDAddress;
@@ -26,7 +25,6 @@ contract Market {
 
         orderCounter += 1;
         ownerOfOrder[orderCounter] = msg.sender;
-        // isAvailable[orderCounter] = true;
 
         emit CreateSellOrder(orderCounter, msg.sender, tokenId, price);
     }
@@ -35,7 +33,6 @@ contract Market {
         require(ownerOfOrder[orderId] == msg.sender, "Caller isn't order's owner");
 
         delete ownerOfOrder[orderId];
-        // delete isAvailable[orderId];
 
         emit CancelSell(orderId);
     }
@@ -57,7 +54,7 @@ contract Market {
 
         delete ownerOfOrder[orderId];
 
-        emit Buy(orderId);
+        emit Buy(orderId, msg.sender);
     }
 
     // ---------------------Signature verification---------------------

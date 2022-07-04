@@ -37,7 +37,7 @@ func main() {
 	contractAddress := common.HexToAddress(MARKET_ADDRESS)
 	query := ethereum.FilterQuery{
 		FromBlock: big.NewInt(0),
-		ToBlock:   big.NewInt(10),
+		ToBlock:   big.NewInt(20),
 		Addresses: []common.Address{
 			contractAddress,
 		},
@@ -57,7 +57,7 @@ func main() {
 	}
 
 	logCreateSellOrderSigHash := sigHash("CreateSellOrder(uint256,address,uint256,uint256)")
-	logBuySigHash := sigHash("Buy(uint256)")
+	logBuySigHash := sigHash("Buy(uint256,address)")
 	logCancelSellSigHash := sigHash("CancelSell(uint256)")
 
 	for _, vLog := range logs {
@@ -152,7 +152,7 @@ func insertOrderToDB(c *mongo.Collection, m *market.MarketCreateSellOrder) error
 
 func updateOrderAfterBuying(c *mongo.Collection, m *market.MarketBuy) error {
 	filter := bson.D{{Key: "orderId", Value: m.OrderId.String()}}
-	update := bson.D{{Key: "$set", Value: bson.D{{Key: "status", Value: "sold"}}}} // {Key: "buyer", Value: "m.Buyer"}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "status", Value: "sold"}, {Key: "buyer", Value: m.Buyer.Hex()}}}} // ,
 	_, err := c.UpdateOne(context.TODO(), filter, update)
 
 	return err
@@ -160,7 +160,7 @@ func updateOrderAfterBuying(c *mongo.Collection, m *market.MarketBuy) error {
 
 func updateOrderAfterCanceling(c *mongo.Collection, m *market.MarketCancelSell) error {
 	filter := bson.D{{Key: "orderId", Value: m.OrderId.String()}}
-	update := bson.D{{Key: "$set", Value: bson.D{{Key: "status", Value: "canceled"}}}} // {Key: "buyer", Value: "m.Buyer"}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "status", Value: "canceled"}}}}
 	_, err := c.UpdateOne(context.TODO(), filter, update)
 
 	return err

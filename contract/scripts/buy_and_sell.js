@@ -11,11 +11,29 @@ async function main() {
     const NFT = await ethers.getContractAt("NFT", NFTAddress)
     const market = await ethers.getContractAt("Market", marketAddress)
 
-    // ---------------------Buy, sign, sell---------------------
+
+    // ---------------------Mint tokens---------------------
+    // -----------------------------------------------------
+    await USD.connect(admin).mint(buyer.address, 1000);
+    await USD.connect(buyer).approve(market.address, 1000);
+
+    await NFT.connect(admin).mint(seller.address); // tokenId = 1
+    await NFT.connect(admin).mint(seller.address); // tokenId = 2
+    await NFT.connect(admin).mint(seller.address); // tokenId = 3
+    await NFT.connect(seller).approve(market.address, 1);
+    await NFT.connect(seller).approve(market.address, 2);
+    await NFT.connect(seller).approve(market.address, 3);
+
+    // ---------------------Buy, sign, sell; cancel---------------------
     // ---------------------------------------------------------
     await market.connect(seller).createSellOrder(1, 150);
+    await market.connect(seller).createSellOrder(2, 400);
+    await market.connect(seller).createSellOrder(3, 1000); // orderId = 3
+
     const signature = getSignatureUsingEthersJS(seller, 1, 1, 150);
     await market.connect(buyer).buy(1, 1, 150, signature);
+
+    await market.connect(seller).cancelSell(3) // orderId = 3
 }
 
 async function getSignatureUsingEthersJS(signer, orderId, tokenId, price) {
